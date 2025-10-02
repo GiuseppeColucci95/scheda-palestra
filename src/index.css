@@ -21,11 +21,19 @@ header {
   height: 70px;
 
   #home-ref {
-    color: black;
+    color: rgb(0, 25, 164);
+    font-size: 20px;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    border-top: 2px solid transparent;
+    transition: color 1s, border-bottom 1s, border-top 1s;
 
     &:hover {
-      color: rgb(104, 104, 104);
+      border-top: 2px solid rgb(255, 0, 89);
+      border-bottom: 2px solid rgb(255, 0, 89);
+      color: rgb(255, 0, 89);
     }
+
   }
 
   .button {
@@ -33,11 +41,29 @@ header {
     border-radius: 5px;
     border: 1px solid rgb(0, 25, 164);
     padding: 5px 10px;
+    transition: background-color 0.5s;
 
     &:hover {
       background-color: rgb(255, 0, 89);
       border: 1px solid black;
     }
+  }
+
+  @media screen and (max-width: 341px) {
+    height: 110px;
+
+    flex-direction: column;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-align: center;
+  }
+
+  @media screen and (max-width: 271px) {
+    height: 130px;
+  }
+
+  @media screen and (max-width: 214px) {
+    height: 160px;
   }
 }
 
@@ -47,6 +73,16 @@ header {
 
 main {
   min-height: calc(100vh - 130px);
+
+  #workout-card {
+    border: 3px solid rgb(0, 25, 164);
+    transition: border 0.5s;
+
+    &:hover {
+      border: 3px solid rgb(255, 0, 89);
+      cursor: pointer;
+    }
+  }
 }
 
 /* #endregion MAIN */
@@ -56,6 +92,14 @@ main {
 footer {
   background-color: rgb(114, 178, 250);
   height: 60px;
+  padding: 0 10px;
+  text-align: center;
+  text-wrap: wrap;
+  font-weight: 700;
+
+  @media screen and (max-width: 228px) {
+    height: 100px;
+  }
 }
 
 /* #endregion FOOTER */

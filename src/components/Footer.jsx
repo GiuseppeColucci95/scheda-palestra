@@ -2,8 +2,8 @@ export default function Footer() {
 
   return (
     <>
-      <footer>
-        <h1>footer</h1>
+      <footer className="d-flex align-items-center justify-content-center">
+        <div className="text-black">Made by Giuseppe Colucci</div>
       </footer>
     </>
   );
