@@ -1,6 +1,10 @@
+import { useParams } from "react-router-dom";
+
 export default function WorkoutPage() {
 
   //datas
+  const { id } = useParams();
+
   const schede = [
     {
       id: 1,
@@ -190,14 +194,17 @@ export default function WorkoutPage() {
     }
   ];
 
-  const workout = schede.find(workout => workout.id == 1);
+  const workout = schede.find(workout => workout.id == id);
 
   //template
   return (
     <>
       <div className="container py-5">
 
-        <h1 className="pb-2">{workout.titolo}</h1>
+        <div id="workout-title" className="d-flex justify-content-between align-items-center">
+          <h1 className="pb-2 m-0">{workout.titolo}</h1>
+          <h6 className="m-0">Gruppi muscolari: [{workout.gruppiMuscolari}]</h6>
+        </div>
 
         <div className="d-none d-sm-block">
           <table className="table table-bordered">

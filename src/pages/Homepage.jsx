@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Homepage() {
 
   //datas
@@ -202,7 +204,7 @@ export default function Homepage() {
           {
             schede.map(workout => (
 
-              <div key={workout.id} className="col">
+              <Link to={`/workout/${workout.id}`} key={workout.id} className="col text-decoration-none">
                 <div id="workout-card" className="card">
                   <div className="card-header">
                     <h2 className="m-0 text-center">{workout.titolo}</h2>
@@ -220,7 +222,7 @@ export default function Homepage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
               // WORKOUT CARD
 
             ))

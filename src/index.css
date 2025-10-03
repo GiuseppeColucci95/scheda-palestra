@@ -82,6 +82,15 @@ main {
       cursor: pointer;
     }
   }
+
+  #workout-title {
+
+    @media screen and (max-width:575px) {
+
+      flex-direction: column;
+      text-align: center;
+    }
+  }
 }
 
 /* #endregion MAIN */
