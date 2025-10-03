@@ -73,13 +73,25 @@ header {
 main {
   min-height: calc(100vh - 130px);
 
+  #schede-title {
+
+    @media screen and (max-width: 253px) {
+
+      font-size: 20px;
+    }
+
+    @media screen and (max-width: 179px) {
+
+      font-size: 15px;
+    }
+  }
+
   #workout-card {
     border: 3px solid rgb(0, 25, 164);
     transition: border 0.5s;
 
     &:hover {
       border: 3px solid rgb(255, 0, 89);
-      cursor: pointer;
     }
   }
 
@@ -89,6 +101,15 @@ main {
 
       flex-direction: column;
       text-align: center;
+      padding-bottom: 10px;
+    }
+  }
+
+  #buttons {
+
+    @media screen and (max-width: 295px) {
+
+      flex-direction: column;
     }
   }
 }
