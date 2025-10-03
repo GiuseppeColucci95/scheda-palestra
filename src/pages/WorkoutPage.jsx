@@ -1,4 +1,4 @@
-export default function Homepage() {
+export default function WorkoutPage() {
 
   //datas
   const schede = [
@@ -190,44 +190,58 @@ export default function Homepage() {
     }
   ];
 
+  const workout = schede.find(workout => workout.id == 1);
+
   //template
   return (
     <>
-      <div className="container">
+      <div className="container py-5">
 
-        <h1 className="text-center py-3">LE TUE SCHEDE DI ALLENAMENTO</h1>
+        <h1 className="pb-2">{workout.titolo}</h1>
 
-        <div className="row row-cols-3 row-gap-4">
+        <div className="d-none d-sm-block">
+          <table className="table table-bordered">
+            <thead className="table-primary">
+              <tr>
+                <th>Esercizio</th>
+                <th>Serie</th>
+                <th>Ripetizioni</th>
+                <th>Recupero</th>
+              </tr>
+            </thead>
 
+            <tbody>
+              {
+                workout.esercizi.map(esercizio => (
+                  <tr key={esercizio.titolo}>
+                    <td>{esercizio.titolo}</td>
+                    <td>{esercizio.serie}</td>
+                    <td>{esercizio.ripetizioni}</td>
+                    <td>{esercizio.recupero} secondi</td>
+                  </tr>))
+              }
+            </tbody>
+            {/* EXERCISES */}
+
+          </table>
+        </div>
+        {/* BIG TABLE */}
+
+        <div class="d-block d-sm-none">
           {
-            schede.map(workout => (
-
-              <div key={workout.id} className="col">
-                <div id="workout-card" className="card">
-                  <div className="card-header">
-                    <h2 className="m-0 text-center">{workout.titolo}</h2>
-                  </div>
-                  <div className="card-body">
-                    <h4>Durata allenamento: {workout.durata} minuti</h4>
-                    <h4>Numero di esercizi: {workout.numeroEsercizi}</h4>
-                    <h4 className="m-0">Gruppi: {workout.gruppiMuscolari}</h4>
-                  </div>
-                  <div className="card-footer">
-                    <div className="div d-flex justify-content-center gap-2">
-                      <a className="btn btn-sm btn-success" href="#">Visualizza</a>
-                      <a className="btn btn-sm btn-warning" href="#">Modifica</a>
-                      <a className="btn btn-sm btn-danger" href="#">Elimina</a>
-                    </div>
-                  </div>
+            workout.esercizi.map(esercizio => (
+              <div key={esercizio.titolo} class="border p-2">
+                <div class="row">
+                  <div className="col-12"><strong>Esercizio:</strong> {esercizio.titolo}</div>
+                  <div className="col-12"><strong>Serie:</strong> {esercizio.serie}</div>
+                  <div className="col-12"><strong>Ripetizioni:</strong> {esercizio.ripetizioni}</div>
+                  <div className="col-12"><strong>Recupero:</strong> {esercizio.recupero} secondi</div>
                 </div>
               </div>
-              // WORKOUT CARD
-
             ))
           }
-
         </div>
-        {/* WORKOUTS ROW */}
+        {/* SMALL TABLE */}
 
       </div>
     </>
