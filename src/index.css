@@ -1,6 +1,7 @@
 /* #region UTILITIES */
 
 @import 'bootstrap';
+@import 'bootstrap-icons';
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -117,7 +118,7 @@ main {
 
   .buttons-workout {
 
-    @media screen and (max-width: 324px) {
+    @media screen and (max-width: 767px) {
 
       flex-direction: column;
     }

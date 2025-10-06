@@ -7,19 +7,20 @@ export default function WorkoutPage() {
   //datas
   const workoutsToSet = JSON.parse(localStorage.getItem("schede"));
   const { id } = useParams();
-  const [showExerciseForm, setShowExerciseForm] = useState(false);
+  const [showAddExerciseForm, setShowAddExerciseForm] = useState(false);
   const [exerciseForm, setExerciseForm] = useState({ titolo: "", serie: "", ripetizioni: "", recupero: "" });
   const [workouts, setWorkouts] = useState(workoutsToSet);
   const [workout, setWorkout] = useState(null);
 
-  //submit adding exercise
-  function handleSubmitAdd(e) {
+  //function to add an exercise
+  function handleAddExercise(e) {
 
     e.preventDefault();
     console.log(exerciseForm);
 
     const workoutToEdit = workout;
     workoutToEdit.esercizi.push(exerciseForm);
+    workoutToEdit.numeroEsercizi++;
 
     const workoutsToEdit = JSON.parse(localStorage.getItem("schede"));
     for (let i = 0; i < workoutsToEdit.length; i++) {
@@ -31,8 +32,48 @@ export default function WorkoutPage() {
     localStorage.setItem("schede", JSON.stringify(workoutsToEdit));
 
     setExerciseForm({ titolo: "", serie: "", ripetizioni: "", recupero: "" });
-    setShowExerciseForm(false);
+    setShowAddExerciseForm(false);
     setWorkouts(workoutsToEdit);
+    console.log(workoutToEdit);
+  }
+
+  //function to delete an exercise
+  function handleDeleteExercise(esercizio) {
+
+    const workoutToEdit = workout;
+
+    //modify workout deleting the exercise
+    const exercisesToCheck = workout.esercizi;
+    const newExercises = [];
+
+    for (let i = 0; i < exercisesToCheck.length; i++) {
+      if (exercisesToCheck[i].titolo != esercizio.titolo) {
+        newExercises.push(exercisesToCheck[i]);
+      }
+    }
+
+    workoutToEdit.numeroEsercizi--;
+    workoutToEdit.esercizi = newExercises;
+
+    //modify workouts inserting new workout modified
+    const workoutsToEdit = JSON.parse(localStorage.getItem("schede"));
+    for (let i = 0; i < workoutsToEdit.length; i++) {
+      if (workoutsToEdit[i].id == id) {
+        workoutsToEdit[i] = workoutToEdit;
+      }
+    }
+
+    localStorage.setItem("schede", JSON.stringify(workoutsToEdit));
+
+    setWorkouts(workoutsToEdit);
+    console.log(workoutToEdit);
+  }
+
+  //function to edit an exercise
+  function handleEditExercise(esercizio) {
+
+    setWorkouts(workoutsToEdit);
+    console.log(workoutToEdit);
   }
 
   useEffect(() => {
@@ -40,7 +81,6 @@ export default function WorkoutPage() {
     const workoutToSet = workouts.find(workout => workout.id == id);
     setWorkout(workoutToSet);
   }, [workouts]);
-
 
   //template
   return (
@@ -61,6 +101,7 @@ export default function WorkoutPage() {
                 <th>Serie</th>
                 <th>Ripetizioni</th>
                 <th>Recupero</th>
+                <th></th>
               </tr>
             </thead>
 
@@ -71,10 +112,14 @@ export default function WorkoutPage() {
                 (
                   workout.esercizi.map(esercizio => (
                     <tr key={esercizio.titolo}>
-                      <td>{esercizio.titolo}</td>
-                      <td>{esercizio.serie}</td>
-                      <td>{esercizio.ripetizioni}</td>
-                      <td>{esercizio.recupero} secondi</td>
+                      <td className="align-middle">{esercizio.titolo}</td>
+                      <td className="align-middle">{esercizio.serie}</td>
+                      <td className="align-middle">{esercizio.ripetizioni}</td>
+                      <td className="align-middle">{esercizio.recupero} secondi</td>
+                      <td className="align-middle d-flex justify-content-center gap-1">
+                        <button onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
+                        <button onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
+                      </td>
                     </tr>))
                 )
               }
@@ -97,6 +142,10 @@ export default function WorkoutPage() {
                     <div className="col-12"><strong>Serie:</strong> {esercizio.serie}</div>
                     <div className="col-12"><strong>Ripetizioni:</strong> {esercizio.ripetizioni}</div>
                     <div className="col-12"><strong>Recupero:</strong> {esercizio.recupero} secondi</div>
+                    <div className="col-12 d-flex justify-content-end gap-1">
+                      <i className="bi bi-pencil btn btn-sm btn-warning"></i>
+                      <button onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
+                    </div>
                   </div>
                 </div>
               ))
@@ -111,18 +160,18 @@ export default function WorkoutPage() {
           </div>
           <div className="d-flex gap-2 buttons-workout">
             {
-              !showExerciseForm && (<button onClick={() => setShowExerciseForm(true)} className="btn btn-sm btn-success" href="#">Aggiungi esercizio</button>)
+              !showAddExerciseForm && (<button onClick={() => setShowAddExerciseForm(true)} className="btn btn-sm btn-success" href="#">Aggiungi esercizio</button>)
             }
-            <button className="btn btn-sm btn-warning" href="#">Modifica</button>
-            <button className="btn btn-sm btn-danger" href="#">Elimina</button>
+            <button className="btn btn-sm btn-warning" href="#">Modifica scheda</button>
+            <button className="btn btn-sm btn-danger" href="#">Elimina scheda</button>
           </div>
         </div>
-        {/* BUTTONS */}
+        {/* ADD, MODIFY, DELETE AND BACK BUTTONS */}
 
         {
-          showExerciseForm &&
+          showAddExerciseForm &&
           (
-            <form onSubmit={e => handleSubmitAdd(e)} id="exercise-form" className="mt-5 border rounded p-3">
+            <form onSubmit={e => handleAddExercise(e)} id="exercise-form" className="mt-5 border rounded p-3">
               <div className="row d-flex justify-content-center align-items-end row-gap-2">
                 <div className="col-xs-12 col-md-12 col-xl-5">
                   <div>
@@ -184,7 +233,7 @@ export default function WorkoutPage() {
                   </div>
                 </div>
                 <div className="col-xs-12 col-md-4 col-xl-1 text-center">
-                  <button type="submit" className="btn btn-sm btn-success mb-1">Aggiungi</button>
+                  <button type="submit" className="btn btn-sm btn-success mb-1">Conferma</button>
                 </div>
               </div>
 
@@ -195,7 +244,7 @@ export default function WorkoutPage() {
         {/* FORM DI AGGIUNTA O MODIFICA ESERCIZIO */}
 
 
-      </div>
+      </div >
     </>
   );
 }
