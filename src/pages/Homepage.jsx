@@ -29,7 +29,7 @@ export default function Homepage() {
                   </div>
                   <div className="card-footer">
                     <div id="buttons" className="div d-flex justify-content-center gap-2">
-                      <Link to={`/workout/${workout.id}`} className="btn btn-sm btn-success" href="#">Visualizza</Link>
+                      <Link to={`/workout/${workout.id}`} className="button btn btn-sm">Visualizza</Link>
                       <button className="btn btn-sm btn-warning" href="#">Modifica</button>
                       <button className="btn btn-sm btn-danger" href="#">Elimina</button>
                     </div>
