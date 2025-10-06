@@ -8,18 +8,27 @@ export default function WorkoutPage() {
   const workoutsToSet = JSON.parse(localStorage.getItem("schede"));
   const { id } = useParams();
   const [showAddExerciseForm, setShowAddExerciseForm] = useState(false);
-  const [exerciseForm, setExerciseForm] = useState({ titolo: "", serie: "", ripetizioni: "", recupero: "" });
+  const [showEditExerciseForm, setShowEditExerciseForm] = useState(false);
+  const [exerciseForm, setExerciseForm] = useState({ id: "", titolo: "", serie: "", ripetizioni: "", recupero: "" });
   const [workouts, setWorkouts] = useState(workoutsToSet);
   const [workout, setWorkout] = useState(null);
 
   //function to add an exercise
-  function handleAddExercise(e) {
+  function handleSubmitAddExercise(e) {
 
     e.preventDefault();
     console.log(exerciseForm);
 
     const workoutToEdit = workout;
-    workoutToEdit.esercizi.push(exerciseForm);
+    const exerciseToAdd = exerciseForm;
+    let idToSet = 0;
+    for (let i = 0; i < workoutToEdit.esercizi.length; i++) {
+      if (workoutToEdit.esercizi[i].id > idToSet) {
+        idToSet = workoutToEdit.esercizi[i].id;
+      }
+    }
+    exerciseToAdd.id = idToSet + 1;
+    workoutToEdit.esercizi.push(exerciseToAdd);
     workoutToEdit.numeroEsercizi++;
 
     const workoutsToEdit = JSON.parse(localStorage.getItem("schede"));
@@ -31,7 +40,7 @@ export default function WorkoutPage() {
 
     localStorage.setItem("schede", JSON.stringify(workoutsToEdit));
 
-    setExerciseForm({ titolo: "", serie: "", ripetizioni: "", recupero: "" });
+    setExerciseForm({ id: "", titolo: "", serie: "", ripetizioni: "", recupero: "" });
     setShowAddExerciseForm(false);
     setWorkouts(workoutsToEdit);
     console.log(workoutToEdit);
@@ -47,7 +56,7 @@ export default function WorkoutPage() {
     const newExercises = [];
 
     for (let i = 0; i < exercisesToCheck.length; i++) {
-      if (exercisesToCheck[i].titolo != esercizio.titolo) {
+      if (exercisesToCheck[i].id != esercizio.id) {
         newExercises.push(exercisesToCheck[i]);
       }
     }
@@ -69,9 +78,43 @@ export default function WorkoutPage() {
     console.log(workoutToEdit);
   }
 
-  //function to edit an exercise
+  //function to open an exercise and modify it
   function handleEditExercise(esercizio) {
 
+    const exerciseToEdit = workout.esercizi.find(exercise => exercise.id == esercizio.id);
+
+    setExerciseForm(exerciseToEdit);
+
+    setShowEditExerciseForm(true);
+  }
+
+  //function to edit an exercise
+  function handleSubmitEditExercise(e) {
+
+    e.preventDefault();
+
+    const workoutToEdit = workout;
+    const exercisesToEdit = workoutToEdit.esercizi;
+
+    for (let i = 0; i < exercisesToEdit.length; i++) {
+      if (exercisesToEdit[i].id == exerciseForm.id) {
+        exercisesToEdit[i] = exerciseForm;
+      }
+    }
+
+    workoutToEdit.esercizi = exercisesToEdit;
+
+    const workoutsToEdit = JSON.parse(localStorage.getItem("schede"));
+    for (let i = 0; i < workoutsToEdit.length; i++) {
+      if (workoutsToEdit[i].id == id) {
+        workoutsToEdit[i] = workoutToEdit;
+      }
+    }
+
+    localStorage.setItem("schede", JSON.stringify(workoutsToEdit));
+
+    setExerciseForm({ id: "", titolo: "", serie: "", ripetizioni: "", recupero: "" });
+    setShowEditExerciseForm(false);
     setWorkouts(workoutsToEdit);
     console.log(workoutToEdit);
   }
@@ -171,9 +214,9 @@ export default function WorkoutPage() {
         {
           showAddExerciseForm &&
           (
-            <form onSubmit={e => handleAddExercise(e)} id="exercise-form" className="mt-5 border rounded p-3">
-              <div className="row d-flex justify-content-center align-items-end row-gap-2">
-                <div className="col-xs-12 col-md-12 col-xl-5">
+            <form onSubmit={e => handleSubmitAddExercise(e)} id="exercise-form" className="mt-5 border rounded p-3">
+              <div className="row d-flex justify-content-center align-items-end row-gap-3">
+                <div className="col-xs-12 col-md-12 col-xxl-5">
                   <div>
                     <label htmlFor="nome" className="form-label">Nome esercizio</label>
                     <input
@@ -187,7 +230,7 @@ export default function WorkoutPage() {
                       placeholder="Inserisci il nome dell'esercizio..." />
                   </div>
                 </div>
-                <div className="col-xs-12 col-md-4 col-xl-2">
+                <div className="col-xs-12 col-md-4 col-xxl-2">
                   <div>
                     <label htmlFor="serie" className="form-label">Serie</label>
                     <input
@@ -202,7 +245,7 @@ export default function WorkoutPage() {
                       placeholder="Numero di serie..." />
                   </div>
                 </div>
-                <div className="col-xs-12 col-md-4 col-xl-2">
+                <div className="col-xs-12 col-md-4 col-xxl-2">
                   <div>
                     <label htmlFor="ripetizioni" className="form-label">Ripetizioni</label>
                     <input
@@ -217,7 +260,7 @@ export default function WorkoutPage() {
                       placeholder="Numero di ripetizioni..." />
                   </div>
                 </div>
-                <div className="col-xs-12 col-md-4 col-xl-2">
+                <div className="col-xs-12 col-md-4 col-xxl-2">
                   <div>
                     <label htmlFor="recupero" className="form-label">Recupero</label>
                     <input
@@ -232,17 +275,91 @@ export default function WorkoutPage() {
                       placeholder="Secondi di recupero..." />
                   </div>
                 </div>
-                <div className="col-xs-12 col-md-4 col-xl-1 text-center">
+                <div className="col-xs-12 col-md-4 col-xxl-1 text-center">
                   <button type="submit" className="btn btn-sm btn-success mb-1">Conferma</button>
                 </div>
               </div>
 
             </form>
-            //FORM DI AGGIUNTA O MODIFICA ESERCIZIO
+            //FORM DI AGGIUNTA ESERCIZIO
           )
         }
-        {/* FORM DI AGGIUNTA O MODIFICA ESERCIZIO */}
+        {/* FORM DI AGGIUNTA ESERCIZIO */}
 
+        {
+          showEditExerciseForm &&
+          (
+            <form onSubmit={(e) => handleSubmitEditExercise(e)} id="exercise-form" className="mt-5 border rounded p-3">
+              <div className="row d-flex justify-content-center align-items-end row-gap-3">
+                <div className="col-xs-12 col-md-12 col-xxl-5">
+                  <div>
+                    <label htmlFor="nome" className="form-label">Nome esercizio</label>
+                    <input
+                      required
+                      value={exerciseForm.titolo}
+                      onChange={(e) => setExerciseForm({ ...exerciseForm, titolo: e.target.value })}
+                      type="text"
+                      name="nome"
+                      id="nome"
+                      className="form-control"
+                      placeholder="Inserisci il nome dell'esercizio..." />
+                  </div>
+                </div>
+                <div className="col-xs-12 col-md-4 col-xxl-2">
+                  <div>
+                    <label htmlFor="serie" className="form-label">Serie</label>
+                    <input
+                      required
+                      value={exerciseForm.serie}
+                      onChange={(e) => setExerciseForm({ ...exerciseForm, serie: Number(e.target.value) })}
+                      type="number"
+                      min="1"
+                      name="serie"
+                      id="serie"
+                      className="form-control"
+                      placeholder="Numero di serie..." />
+                  </div>
+                </div>
+                <div className="col-xs-12 col-md-4 col-xxl-2">
+                  <div>
+                    <label htmlFor="ripetizioni" className="form-label">Ripetizioni</label>
+                    <input
+                      required
+                      value={exerciseForm.ripetizioni}
+                      onChange={(e) => setExerciseForm({ ...exerciseForm, ripetizioni: Number(e.target.value) })}
+                      type="number"
+                      min="1"
+                      name="ripetizioni"
+                      id="ripetizioni"
+                      className="form-control"
+                      placeholder="Numero di ripetizioni..." />
+                  </div>
+                </div>
+                <div className="col-xs-12 col-md-4 col-xxl-2">
+                  <div>
+                    <label htmlFor="recupero" className="form-label">Recupero</label>
+                    <input
+                      required
+                      value={exerciseForm.recupero}
+                      onChange={(e) => setExerciseForm({ ...exerciseForm, recupero: Number(e.target.value) })}
+                      type="number"
+                      min="1"
+                      name="recupero"
+                      id="recupero"
+                      className="form-control"
+                      placeholder="Secondi di recupero..." />
+                  </div>
+                </div>
+                <div className="col-xs-12 col-md-4 col-xxl-1 text-center">
+                  <button type="submit" className="btn btn-sm btn-success mb-1">Conferma</button>
+                </div>
+              </div>
+
+            </form>
+            //FORM DI MODIFICA ESERCIZIO
+          )
+        }
+        {/* FORM DI MODIFICA ESERCIZIO */}
 
       </div >
     </>
