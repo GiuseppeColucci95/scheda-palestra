@@ -9,7 +9,9 @@ export default function WorkoutPage() {
   const { id } = useParams();
   const [showAddExerciseForm, setShowAddExerciseForm] = useState(false);
   const [showEditExerciseForm, setShowEditExerciseForm] = useState(false);
+  const [showEditWorkoutForm, setShowEditWorkoutForm] = useState(false);
   const [exerciseForm, setExerciseForm] = useState({ id: "", titolo: "", serie: "", ripetizioni: "", recupero: "" });
+  const [workoutForm, setWorkoutForm] = useState({ titolo: "", durata: "", gruppiMuscolari: "" });
   const [workouts, setWorkouts] = useState(workoutsToSet);
   const [workout, setWorkout] = useState(null);
 
@@ -56,6 +58,7 @@ export default function WorkoutPage() {
     const newExercises = [];
 
     for (let i = 0; i < exercisesToCheck.length; i++) {
+      console.log(exercisesToCheck[i].id);
       if (exercisesToCheck[i].id != esercizio.id) {
         newExercises.push(exercisesToCheck[i]);
       }
@@ -119,10 +122,34 @@ export default function WorkoutPage() {
     console.log(workoutToEdit);
   }
 
+  //function to edit a workout
+  function handleEditWorkout(e) {
+
+    e.preventDefault();
+
+    const workoutsToEdit = JSON.parse(localStorage.getItem("schede"));
+    for (let i = 0; i < workoutsToEdit.length; i++) {
+      if (workoutsToEdit[i].id == id) {
+        workoutsToEdit[i].titolo = workoutForm.titolo;
+        workoutsToEdit[i].durata = workoutForm.durata;
+        workoutsToEdit[i].gruppiMuscolari = workoutForm.gruppiMuscolari;
+      }
+    }
+
+    localStorage.setItem("schede", JSON.stringify(workoutsToEdit));
+
+    setShowEditWorkoutForm(false);
+    setWorkouts(workoutsToEdit);
+  }
+
+  //use effect at start of the page and each time workouts changes
   useEffect(() => {
     console.log("APERTURA");
     const workoutToSet = workouts.find(workout => workout.id == id);
     setWorkout(workoutToSet);
+
+    const workoutFormToSet = { titolo: workoutToSet.titolo, durata: workoutToSet.durata, gruppiMuscolari: workoutToSet.gruppiMuscolari };
+    setWorkoutForm(workoutFormToSet);
   }, [workouts]);
 
   //template
@@ -135,6 +162,64 @@ export default function WorkoutPage() {
           <h6 className="m-0"><strong>Durata:</strong> {(workout) && workout.durata} minuti | <strong>Gruppi muscolari:</strong> [{(workout) && workout.gruppiMuscolari}]</h6>
         </div>
         {/* TITLE */}
+
+        {
+          showEditWorkoutForm &&
+          (
+            <form onSubmit={(e) => handleEditWorkout(e)} className="mb-3 border rounded p-3">
+              <div className="row d-flex justify-content-center align-items-end row-gap-3">
+                <div className="col-xs-12 col-xxl-4">
+                  <div>
+                    <label htmlFor="nome" className="form-label">Nome workout</label>
+                    <input
+                      required
+                      value={workoutForm.titolo}
+                      onChange={(e) => setWorkoutForm({ ...workoutForm, titolo: e.target.value })}
+                      type="text"
+                      name="nome"
+                      id="nome"
+                      className="form-control"
+                      placeholder="Inserisci il nome del workout" />
+                  </div>
+                </div>
+                <div className="col-xs-12 col-xxl-3">
+                  <div>
+                    <label htmlFor="durata" className="form-label">Durata</label>
+                    <input
+                      required
+                      value={workoutForm.durata}
+                      onChange={(e) => setWorkoutForm({ ...workoutForm, durata: Number(e.target.value) })}
+                      type="number"
+                      min="1"
+                      name="durata"
+                      id="durata"
+                      className="form-control"
+                      placeholder="Durata in minuti..." />
+                  </div>
+                </div>
+                <div className="col-xs-12 col-xxl-4">
+                  <div>
+                    <label htmlFor="gruppiMuscolari" className="form-label">Gruppi muscolari</label>
+                    <input
+                      required
+                      value={workoutForm.gruppiMuscolari}
+                      onChange={(e) => setWorkoutForm({ ...workoutForm, gruppiMuscolari: e.target.value })}
+                      type="text"
+                      name="gruppiMuscolari"
+                      id="gruppiMuscolari"
+                      className="form-control"
+                      placeholder="Gruppi muscolari..." />
+                  </div>
+                </div>
+                <div className="col-xs-12 col-xxl-1 text-center">
+                  <button type="submit" className="btn btn-sm btn-success mb-1">Conferma</button>
+                </div>
+              </div>
+            </form>
+            //FORM DI MODIFICA SCHEDA
+          )
+        }
+        {/* FORM DI MODIFICA SCHEDA */}
 
         <div className="d-none d-sm-block">
           <table className="table table-bordered">
@@ -160,8 +245,8 @@ export default function WorkoutPage() {
                       <td className="align-middle">{esercizio.ripetizioni}</td>
                       <td className="align-middle">{esercizio.recupero} secondi</td>
                       <td className="align-middle d-flex justify-content-center gap-1">
-                        <button onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
-                        <button onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
+                        <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
+                        <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
                       </td>
                     </tr>))
                 )
@@ -186,8 +271,8 @@ export default function WorkoutPage() {
                     <div className="col-12"><strong>Ripetizioni:</strong> {esercizio.ripetizioni}</div>
                     <div className="col-12"><strong>Recupero:</strong> {esercizio.recupero} secondi</div>
                     <div className="col-12 d-flex justify-content-end gap-1">
-                      <i className="bi bi-pencil btn btn-sm btn-warning"></i>
-                      <button onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
+                      <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
+                      <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
                     </div>
                   </div>
                 </div>
@@ -202,11 +287,9 @@ export default function WorkoutPage() {
             <Link to={'/'} className="button btn btn-sm">Torna Indietro</Link>
           </div>
           <div className="d-flex gap-2 buttons-workout">
-            {
-              !showAddExerciseForm && (<button onClick={() => setShowAddExerciseForm(true)} className="btn btn-sm btn-success" href="#">Aggiungi esercizio</button>)
-            }
-            <button className="btn btn-sm btn-warning" href="#">Modifica scheda</button>
-            <button className="btn btn-sm btn-danger" href="#">Elimina scheda</button>
+            <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} onClick={() => setShowAddExerciseForm(true)} className="btn btn-sm btn-success" href="#">Aggiungi esercizio</button>
+            <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} onClick={() => setShowEditWorkoutForm(true)} className="btn btn-sm btn-warning" href="#">Modifica scheda</button>
+            <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} className="btn btn-sm btn-danger" href="#">Elimina scheda</button>
           </div>
         </div>
         {/* ADD, MODIFY, DELETE AND BACK BUTTONS */}
