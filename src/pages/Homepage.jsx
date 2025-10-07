@@ -1,9 +1,27 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Homepage() {
 
   //datas
   const schede = JSON.parse(localStorage.getItem("schede"));
+  const navigate = useNavigate();
+
+  //function to delete a workout
+  function handleDeleteWorkout(id) {
+
+    const workoutsToEdit = JSON.parse(localStorage.getItem("schede"));
+    const newWorkoutsToSet = [];
+    for (let i = 0; i < workoutsToEdit.length; i++) {
+      if (workoutsToEdit[i].id != id) {
+        newWorkoutsToSet.push(workoutsToEdit[i]);
+      }
+    }
+
+    localStorage.setItem("schede", JSON.stringify(newWorkoutsToSet));
+
+    navigate('/');
+  }
 
   //template
   return (
@@ -30,8 +48,7 @@ export default function Homepage() {
                   <div className="card-footer">
                     <div id="buttons" className="div d-flex justify-content-center gap-2">
                       <Link to={`/workout/${workout.id}`} className="button btn btn-sm">Visualizza</Link>
-                      <button className="btn btn-sm btn-warning" href="#">Modifica</button>
-                      <button className="btn btn-sm btn-danger" href="#">Elimina</button>
+                      <button onClick={() => handleDeleteWorkout(workout.id)} className="btn btn-sm btn-danger" href="#">Elimina</button>
                     </div>
                   </div>
                 </div>

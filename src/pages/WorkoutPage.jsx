@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -7,6 +7,7 @@ export default function WorkoutPage() {
   //datas
   const workoutsToSet = JSON.parse(localStorage.getItem("schede"));
   const { id } = useParams();
+  const navigate = useNavigate();
   const [showAddExerciseForm, setShowAddExerciseForm] = useState(false);
   const [showEditExerciseForm, setShowEditExerciseForm] = useState(false);
   const [showEditWorkoutForm, setShowEditWorkoutForm] = useState(false);
@@ -143,9 +144,19 @@ export default function WorkoutPage() {
   }
 
   //function to delete a workout
-  function handleDeleteWorkout(e) {
+  function handleDeleteWorkout() {
 
-    console.log("ciao");
+    const workoutsToEdit = JSON.parse(localStorage.getItem("schede"));
+    const newWorkoutsToSet = [];
+    for (let i = 0; i < workoutsToEdit.length; i++) {
+      if (workoutsToEdit[i].id != id) {
+        newWorkoutsToSet.push(workoutsToEdit[i]);
+      }
+    }
+
+    localStorage.setItem("schede", JSON.stringify(newWorkoutsToSet));
+
+    navigate('/');
   }
 
   //use effect at start of the page and each time workouts changes
@@ -257,7 +268,7 @@ export default function WorkoutPage() {
                     &&
                     (
                       workout.esercizi.map(esercizio => (
-                        <tr key={esercizio.titolo}>
+                        <tr key={esercizio.id}>
                           <td className="align-middle">{esercizio.titolo}</td>
                           <td className="align-middle">{esercizio.serie}</td>
                           <td className="align-middle">{esercizio.ripetizioni}</td>
@@ -284,7 +295,7 @@ export default function WorkoutPage() {
             <div className="d-block d-sm-none pb-3">
               {
                 workout.esercizi.map(esercizio => (
-                  <div key={esercizio.titolo} className="border p-2">
+                  <div key={esercizio.id} className="border p-2">
                     <div className="row">
                       <div className="col-12"><strong>Esercizio:</strong> {esercizio.titolo}</div>
                       <div className="col-12"><strong>Serie:</strong> {esercizio.serie}</div>
@@ -313,7 +324,7 @@ export default function WorkoutPage() {
               <div className="d-flex gap-2 buttons-workout">
                 <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} onClick={() => setShowAddExerciseForm(true)} className="btn btn-sm btn-success" href="#">Aggiungi esercizio</button>
                 <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} onClick={() => setShowEditWorkoutForm(true)} className="btn btn-sm btn-warning" href="#">Modifica scheda</button>
-                <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} onClick={(e) => handleDeleteWorkout(e)} className="btn btn-sm btn-danger" href="#">Elimina scheda</button>
+                <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} onClick={handleDeleteWorkout} className="btn btn-sm btn-danger" href="#">Elimina scheda</button>
               </div>
             </div>
           )
