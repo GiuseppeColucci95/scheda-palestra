@@ -10,6 +10,8 @@ export default function NewWorkoutPage() {
   //function to add a workout and redirect to workout page
   function handleAddWorkout(e) {
 
+    e.preventDefault();
+
     const workoutsToEdit = JSON.parse(localStorage.getItem("schede"));
 
     let idToSet = 0;
@@ -31,7 +33,7 @@ export default function NewWorkoutPage() {
     workoutsToEdit.push(newCompleteWorkout);
     localStorage.setItem("schede", JSON.stringify(workoutsToEdit));
 
-    navigate(`/workout/${newCompleteWorkout.id}`);
+    navigate(`/workout/${idToSet}`);
   }
 
   //template
@@ -48,6 +50,7 @@ export default function NewWorkoutPage() {
               <div>
                 <label htmlFor="nome" className="form-label">Nome workout</label>
                 <input
+                  autoFocus
                   required
                   value={workoutForm.titolo}
                   onChange={(e) => setWorkoutForm({ ...workoutForm, titolo: e.target.value })}

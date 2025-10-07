@@ -198,6 +198,7 @@ export default function WorkoutPage() {
                   <div>
                     <label htmlFor="nome" className="form-label">Nome workout</label>
                     <input
+                      autoFocus
                       required
                       value={workoutForm.titolo}
                       onChange={(e) => setWorkoutForm({ ...workoutForm, titolo: e.target.value })}
@@ -248,69 +249,82 @@ export default function WorkoutPage() {
         {/* FORM DI MODIFICA SCHEDA */}
 
         {
-          (workout) &&
+          (workout)
+          &&
           (
-            <div className="d-none d-sm-block">
-              <table className="table table-bordered">
-                <thead className="table-primary">
-                  <tr>
-                    <th>Esercizio</th>
-                    <th>Serie</th>
-                    <th>Ripetizioni</th>
-                    <th>Recupero</th>
-                    <th></th>
-                  </tr>
-                </thead>
+            workout.numeroEsercizi > 0
+              ?
+              (
+                <div className="d-none d-sm-block">
+                  <table className="table table-bordered">
+                    <thead className="table-primary">
+                      <tr>
+                        <th>Esercizio</th>
+                        <th>Serie</th>
+                        <th>Ripetizioni</th>
+                        <th>Recupero</th>
+                        <th></th>
+                      </tr>
+                    </thead>
 
-                <tbody>
-                  {
-                    (workout)
-                    &&
-                    (
-                      workout.esercizi.map(esercizio => (
-                        <tr key={esercizio.id}>
-                          <td className="align-middle">{esercizio.titolo}</td>
-                          <td className="align-middle">{esercizio.serie}</td>
-                          <td className="align-middle">{esercizio.ripetizioni}</td>
-                          <td className="align-middle">{esercizio.recupero} secondi</td>
-                          <td className="align-middle d-flex justify-content-center gap-1">
-                            <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
-                            <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
-                          </td>
-                        </tr>))
-                    )
-                  }
-                </tbody>
-                {/* EXERCISES */}
+                    <tbody>
+                      {
+                        (workout)
+                        &&
+                        (
+                          workout.esercizi.map(esercizio => (
+                            <tr key={esercizio.id}>
+                              <td className="align-middle">{esercizio.titolo}</td>
+                              <td className="align-middle">{esercizio.serie}</td>
+                              <td className="align-middle">{esercizio.ripetizioni}</td>
+                              <td className="align-middle">{esercizio.recupero} secondi</td>
+                              <td className="align-middle d-flex justify-content-center gap-1">
+                                <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
+                                <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
+                              </td>
+                            </tr>))
+                        )
+                      }
+                    </tbody>
+                    {/* EXERCISES */}
 
-              </table>
-            </div>
+                  </table>
+                </div>
+              )
+              :
+              <div className="d-none d-sm-block text-center my-5 fs-5">Ancora nessun esercizio, aggiungine uno!</div>
           )
-
         }
         {/* BIG TABLE */}
 
         {
-          workout &&
+          (workout)
+          &&
           (
-            <div className="d-block d-sm-none pb-3">
-              {
-                workout.esercizi.map(esercizio => (
-                  <div key={esercizio.id} className="border p-2">
-                    <div className="row">
-                      <div className="col-12"><strong>Esercizio:</strong> {esercizio.titolo}</div>
-                      <div className="col-12"><strong>Serie:</strong> {esercizio.serie}</div>
-                      <div className="col-12"><strong>Ripetizioni:</strong> {esercizio.ripetizioni}</div>
-                      <div className="col-12"><strong>Recupero:</strong> {esercizio.recupero} secondi</div>
-                      <div className="col-12 d-flex justify-content-end gap-1">
-                        <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
-                        <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
+            workout.numeroEsercizi > 0
+              ?
+              (
+                <div className="d-block d-sm-none pb-3">
+                  {
+                    workout.esercizi.map(esercizio => (
+                      <div key={esercizio.id} className="border p-2">
+                        <div className="row">
+                          <div className="col-12"><strong>Esercizio:</strong> {esercizio.titolo}</div>
+                          <div className="col-12"><strong>Serie:</strong> {esercizio.serie}</div>
+                          <div className="col-12"><strong>Ripetizioni:</strong> {esercizio.ripetizioni}</div>
+                          <div className="col-12"><strong>Recupero:</strong> {esercizio.recupero} secondi</div>
+                          <div className="col-12 d-flex justify-content-end gap-1">
+                            <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
+                            <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ))
-              }
-            </div>
+                    ))
+                  }
+                </div>
+              )
+              :
+              <div className="d-block d-sm-none text-center my-5 fs-5">Ancora nessun esercizio, aggiungine uno!</div>
           )
         }
         {/* SMALL TABLE */}
@@ -341,6 +355,7 @@ export default function WorkoutPage() {
                   <div>
                     <label htmlFor="nome" className="form-label">Nome esercizio</label>
                     <input
+                      autoFocus
                       required
                       value={exerciseForm.titolo}
                       onChange={(e) => setExerciseForm({ ...exerciseForm, titolo: e.target.value })}
@@ -416,6 +431,7 @@ export default function WorkoutPage() {
                   <div>
                     <label htmlFor="nome" className="form-label">Nome esercizio</label>
                     <input
+                      autoFocus
                       required
                       value={exerciseForm.titolo}
                       onChange={(e) => setExerciseForm({ ...exerciseForm, titolo: e.target.value })}

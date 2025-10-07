@@ -28,7 +28,17 @@ export default function Homepage() {
     <>
       <div className="container py-5">
 
-        <h1 id="schede-title" className="text-center pb-2">LE TUE SCHEDE DI ALLENAMENTO</h1>
+        {
+          schede.length > 0
+            ?
+            (
+              <h1 id="schede-title" className="text-center pb-2">LE TUE SCHEDE DI ALLENAMENTO</h1>
+            )
+            :
+            (
+              <h1 className="text-center mt-5">Nessuna scheda presente, inseriscine una!</h1>
+            )
+        }
 
         <div className="row row-cols-xs-1 row-cols-md-2 row-cols-lg-3 row-gap-4">
 
@@ -36,7 +46,7 @@ export default function Homepage() {
             schede.map(workout => (
 
               <div key={workout.id} className="col">
-                <div id="workout-card" className="card">
+                <div id="workout-card" className="card h-100">
                   <div className="card-header">
                     <h2 className="m-0 text-center">{workout.titolo}</h2>
                   </div>
