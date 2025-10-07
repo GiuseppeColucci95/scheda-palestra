@@ -248,7 +248,7 @@ export default function WorkoutPage() {
         {/* FORM DI MODIFICA SCHEDA */}
 
         {
-          workout &&
+          (workout) &&
           (
             <div className="d-none d-sm-block">
               <table className="table table-bordered">
@@ -286,6 +286,7 @@ export default function WorkoutPage() {
               </table>
             </div>
           )
+
         }
         {/* BIG TABLE */}
 
