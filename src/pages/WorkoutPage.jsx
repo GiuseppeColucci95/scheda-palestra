@@ -142,14 +142,24 @@ export default function WorkoutPage() {
     setWorkouts(workoutsToEdit);
   }
 
+  //function to delete a workout
+  function handleDeleteWorkout(e) {
+
+    console.log("ciao");
+  }
+
   //use effect at start of the page and each time workouts changes
   useEffect(() => {
     console.log("APERTURA");
     const workoutToSet = workouts.find(workout => workout.id == id);
-    setWorkout(workoutToSet);
 
-    const workoutFormToSet = { titolo: workoutToSet.titolo, durata: workoutToSet.durata, gruppiMuscolari: workoutToSet.gruppiMuscolari };
-    setWorkoutForm(workoutFormToSet);
+    if (workoutToSet) {
+
+      setWorkout(workoutToSet);
+
+      const workoutFormToSet = { titolo: workoutToSet.titolo, durata: workoutToSet.durata, gruppiMuscolari: workoutToSet.gruppiMuscolari };
+      setWorkoutForm(workoutFormToSet);
+    }
   }, [workouts]);
 
   //template
@@ -157,14 +167,19 @@ export default function WorkoutPage() {
     <>
       <div className="container py-5">
 
-        <div id="workout-title" className="d-flex justify-content-between align-items-center">
-          <h1 className="pb-2 m-0">{(workout) && workout.titolo}</h1>
-          <h6 className="m-0"><strong>Durata:</strong> {(workout) && workout.durata} minuti | <strong>Gruppi muscolari:</strong> [{(workout) && workout.gruppiMuscolari}]</h6>
-        </div>
+        {
+          workout &&
+          (
+            <div id="workout-title" className="d-flex justify-content-between align-items-center">
+              <h1 className="pb-2 m-0">{(workout) && workout.titolo}</h1>
+              <h6 className="m-0"><strong>Durata:</strong> {(workout) && workout.durata} minuti | <strong>Gruppi muscolari:</strong> [{(workout) && workout.gruppiMuscolari}]</h6>
+            </div>
+          )
+        }
         {/* TITLE */}
 
         {
-          showEditWorkoutForm &&
+          (showEditWorkoutForm && workout) &&
           (
             <form onSubmit={(e) => handleEditWorkout(e)} className="mb-3 border rounded p-3">
               <div className="row d-flex justify-content-center align-items-end row-gap-3">
@@ -221,81 +236,92 @@ export default function WorkoutPage() {
         }
         {/* FORM DI MODIFICA SCHEDA */}
 
-        <div className="d-none d-sm-block">
-          <table className="table table-bordered">
-            <thead className="table-primary">
-              <tr>
-                <th>Esercizio</th>
-                <th>Serie</th>
-                <th>Ripetizioni</th>
-                <th>Recupero</th>
-                <th></th>
-              </tr>
-            </thead>
+        {
+          workout &&
+          (
+            <div className="d-none d-sm-block">
+              <table className="table table-bordered">
+                <thead className="table-primary">
+                  <tr>
+                    <th>Esercizio</th>
+                    <th>Serie</th>
+                    <th>Ripetizioni</th>
+                    <th>Recupero</th>
+                    <th></th>
+                  </tr>
+                </thead>
 
-            <tbody>
-              {
-                (workout)
-                &&
-                (
-                  workout.esercizi.map(esercizio => (
-                    <tr key={esercizio.titolo}>
-                      <td className="align-middle">{esercizio.titolo}</td>
-                      <td className="align-middle">{esercizio.serie}</td>
-                      <td className="align-middle">{esercizio.ripetizioni}</td>
-                      <td className="align-middle">{esercizio.recupero} secondi</td>
-                      <td className="align-middle d-flex justify-content-center gap-1">
-                        <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
-                        <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
-                      </td>
-                    </tr>))
-                )
-              }
-            </tbody>
-            {/* EXERCISES */}
+                <tbody>
+                  {
+                    (workout)
+                    &&
+                    (
+                      workout.esercizi.map(esercizio => (
+                        <tr key={esercizio.titolo}>
+                          <td className="align-middle">{esercizio.titolo}</td>
+                          <td className="align-middle">{esercizio.serie}</td>
+                          <td className="align-middle">{esercizio.ripetizioni}</td>
+                          <td className="align-middle">{esercizio.recupero} secondi</td>
+                          <td className="align-middle d-flex justify-content-center gap-1">
+                            <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
+                            <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
+                          </td>
+                        </tr>))
+                    )
+                  }
+                </tbody>
+                {/* EXERCISES */}
 
-          </table>
-        </div>
+              </table>
+            </div>
+          )
+        }
         {/* BIG TABLE */}
 
-        <div className="d-block d-sm-none pb-3">
-          {
-            (workout)
-            &&
-            (
-              workout.esercizi.map(esercizio => (
-                <div key={esercizio.titolo} className="border p-2">
-                  <div className="row">
-                    <div className="col-12"><strong>Esercizio:</strong> {esercizio.titolo}</div>
-                    <div className="col-12"><strong>Serie:</strong> {esercizio.serie}</div>
-                    <div className="col-12"><strong>Ripetizioni:</strong> {esercizio.ripetizioni}</div>
-                    <div className="col-12"><strong>Recupero:</strong> {esercizio.recupero} secondi</div>
-                    <div className="col-12 d-flex justify-content-end gap-1">
-                      <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
-                      <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
+        {
+          workout &&
+          (
+            <div className="d-block d-sm-none pb-3">
+              {
+                workout.esercizi.map(esercizio => (
+                  <div key={esercizio.titolo} className="border p-2">
+                    <div className="row">
+                      <div className="col-12"><strong>Esercizio:</strong> {esercizio.titolo}</div>
+                      <div className="col-12"><strong>Serie:</strong> {esercizio.serie}</div>
+                      <div className="col-12"><strong>Ripetizioni:</strong> {esercizio.ripetizioni}</div>
+                      <div className="col-12"><strong>Recupero:</strong> {esercizio.recupero} secondi</div>
+                      <div className="col-12 d-flex justify-content-end gap-1">
+                        <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleEditExercise(esercizio)} className="btn btn-sm btn-warning"><i className="bi bi-pencil"></i></button>
+                        <button disabled={showEditExerciseForm || showAddExerciseForm || showEditWorkoutForm} onClick={() => handleDeleteExercise(esercizio)} className="btn btn-sm btn-danger"><i className="bi bi-trash3-fill"></i></button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
-            )
-          }
-        </div>
+                ))
+              }
+            </div>
+          )
+        }
         {/* SMALL TABLE */}
 
-        <div className="div d-flex justify-content-between row-gap-2 buttons-workout">
-          <div className="d-flex gap-2 buttons-workout">
-            <Link to={'/'} className="button btn btn-sm">Torna Indietro</Link>
-          </div>
-          <div className="d-flex gap-2 buttons-workout">
-            <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} onClick={() => setShowAddExerciseForm(true)} className="btn btn-sm btn-success" href="#">Aggiungi esercizio</button>
-            <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} onClick={() => setShowEditWorkoutForm(true)} className="btn btn-sm btn-warning" href="#">Modifica scheda</button>
-            <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} className="btn btn-sm btn-danger" href="#">Elimina scheda</button>
-          </div>
-        </div>
+        {
+          workout &&
+          (
+            <div className="div d-flex justify-content-between row-gap-2 buttons-workout">
+              <div className="d-flex gap-2 buttons-workout">
+                <Link to={'/'} className="button btn btn-sm">Torna Indietro</Link>
+              </div>
+              <div className="d-flex gap-2 buttons-workout">
+                <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} onClick={() => setShowAddExerciseForm(true)} className="btn btn-sm btn-success" href="#">Aggiungi esercizio</button>
+                <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} onClick={() => setShowEditWorkoutForm(true)} className="btn btn-sm btn-warning" href="#">Modifica scheda</button>
+                <button disabled={showAddExerciseForm || showEditExerciseForm || showEditWorkoutForm} onClick={(e) => handleDeleteWorkout(e)} className="btn btn-sm btn-danger" href="#">Elimina scheda</button>
+              </div>
+            </div>
+          )
+        }
         {/* ADD, MODIFY, DELETE AND BACK BUTTONS */}
 
         {
-          showAddExerciseForm &&
+          (showAddExerciseForm && workout) &&
           (
             <form onSubmit={e => handleSubmitAddExercise(e)} id="exercise-form" className="mt-5 border rounded p-3">
               <div className="row d-flex justify-content-center align-items-end row-gap-3">
@@ -370,7 +396,7 @@ export default function WorkoutPage() {
         {/* FORM DI AGGIUNTA ESERCIZIO */}
 
         {
-          showEditExerciseForm &&
+          (showEditExerciseForm && workout) &&
           (
             <form onSubmit={(e) => handleSubmitEditExercise(e)} id="exercise-form" className="mt-5 border rounded p-3">
               <div className="row d-flex justify-content-center align-items-end row-gap-3">
@@ -443,6 +469,15 @@ export default function WorkoutPage() {
           )
         }
         {/* FORM DI MODIFICA ESERCIZIO */}
+
+
+        {
+          !workout &&
+          (
+            <h1 className="text-center mt-5">WORKOUT INESISTENTE! TORNARE ALLA HOME</h1>
+          )
+        }
+        {/* PAGINA DI ERRORE PER WORKOUT INESISTENTE */}
 
       </div >
     </>
