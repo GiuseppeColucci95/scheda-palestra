@@ -4,19 +4,14 @@ import { useNavigate } from "react-router-dom";
 export default function Homepage() {
 
   //datas
-  const schede = JSON.parse(localStorage.getItem("schede"));
+  let schede = JSON.parse(localStorage.getItem("schede")) || [];
   const navigate = useNavigate();
 
   //function to delete a workout
   function handleDeleteWorkout(id) {
 
-    const workoutsToEdit = JSON.parse(localStorage.getItem("schede"));
-    const newWorkoutsToSet = [];
-    for (let i = 0; i < workoutsToEdit.length; i++) {
-      if (workoutsToEdit[i].id != id) {
-        newWorkoutsToSet.push(workoutsToEdit[i]);
-      }
-    }
+    const workoutsToEdit = JSON.parse(localStorage.getItem("schede")) || [];
+    const newWorkoutsToSet = workoutsToEdit.filter(workout => workout.id != id);
 
     localStorage.setItem("schede", JSON.stringify(newWorkoutsToSet));
 
