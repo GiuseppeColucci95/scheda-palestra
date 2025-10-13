@@ -11,6 +11,7 @@ export default function Homepage() {
   function handleDeleteWorkout(id) {
 
     const workoutsToEdit = JSON.parse(localStorage.getItem("schede")) || [];
+    const newWorkoutsToSet = workoutsToEdit.filter(workout => workout.id != id);
 
     localStorage.setItem("schede", JSON.stringify(newWorkoutsToSet));
 
