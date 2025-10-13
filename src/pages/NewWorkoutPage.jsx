@@ -12,7 +12,7 @@ export default function NewWorkoutPage() {
 
     e.preventDefault();
 
-    const workoutsToEdit = JSON.parse(localStorage.getItem("schede"));
+    const workoutsToEdit = JSON.parse(localStorage.getItem("schede")) || [];
 
     let idToSet = 0;
     for (let i = 0; i < workoutsToEdit.length; i++) {
